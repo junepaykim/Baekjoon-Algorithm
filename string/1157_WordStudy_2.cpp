@@ -3,8 +3,14 @@
 
 using namespace std;
 
+//Easiest solution is just 
+//1. searches index
+//2. find biggest
+//3. find is there any other biggest data in the array
 
-//Original contains test code too
+//But I used this because it only searches one time through
+//if it's not alphabet but big data such as user, other could cost a lot
+
 int main() {
     string input{};
     cin >> input;
@@ -12,13 +18,13 @@ int main() {
     int check[27] = {0};
     int maximumIndex{27}, nextMaxIndex{27};
     int tempIndex {};
+    for(char ch : input) {
+        tempIndex = ch;
 
-    for(int i=0; i<input.length(); i++) {
-        //Upper alphabet
-        if(input.at(i) < '^') {
-            tempIndex = input.at(i) - 65;
+        if(tempIndex < 91) {
+            tempIndex -= 65;
         } else {
-            tempIndex = input.at(i) - 97;
+            tempIndex -= 97;
         }
         check[tempIndex] ++;
 
@@ -27,10 +33,7 @@ int main() {
             maximumIndex = tempIndex;
         }
     }
-    for(int i=0; i<26; i++) {
-        //cout << check[i] << " ";
-    }
-    //cout << "\n" << char('A' + maximumIndex) << " " << char('A' + nextMaxIndex) << "\n";
+
     if(check[nextMaxIndex] == check[maximumIndex] && maximumIndex != nextMaxIndex) {
         cout << "?";
     } else {
