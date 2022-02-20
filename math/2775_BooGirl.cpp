@@ -27,21 +27,18 @@ int main() {
         }
     }
 
-    int * array = new int[(bigK+1) * bigN];
+    int * array = new int[(bigK+2) * bigN];
 
-    //0 floor clear6
     for(int i=0; i<bigN; i++) {
         array[i] = i+1;
     }
-
-    for(int i=1; i<bigK; i++) {
-        array[i * bigN] = 2 >> i-1;
-        array[i * bigN + 1] = array[i * bigN] + 2;
+    for(int i=0; i<bigK+1; i++) {
+        array[bigN * i] = 1;
     }
 
-    for(int i=0; i<bigK; i++) {
-        for(int j=0; j<bigN; j++) {
-            array[i * bigN + j] = array[i * (bigN-1) + j] + array[i * bigN + j-1];
+    for(int i=1; i<bigK+1; i++) {
+        for(int j=1; j<bigN; j++) {
+            array[i * bigN + j] = array[(i-1) * bigN + j] + array[i * bigN + j-1];
         }
     }
 
@@ -52,14 +49,20 @@ int main() {
         answer += to_string(array[bigN * ansFloor + ansRoomN -1]) + "\n";
     }
 
-    for(int i=0; i<bigK; i++) {
-        for(int j=0; j<bigN; j++) {
-            cout << array[bigN * i + j] <<"\t";
-        }
-        cout << "\n";
-    }
 
-    cout << "\n" << answer.substr(0, answer.length()-1);
+    //디버깅용 출력단
+    
+    // cout << "\n";
+    // for(int i=bigK-1; 0<=i; i--) {
+    //     cout << i << "\t" ;
+    //     for(int j=0; j<bigN; j++) {
+    //         cout << array[bigN * i + j] <<"\t";
+    //     }
+    //     cout << "\n";
+    // }
+
+    //정답
+    cout << answer.substr(0, answer.length()-1);
     delete[] inputSave;
     delete[] array;
     return 0;
