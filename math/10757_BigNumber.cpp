@@ -6,23 +6,39 @@ int main() {
     string A{""}, B{""};
     cin >> A >> B;
 
-    int newLength = ((A.length() > B.length()) ? A.length() : B.length()) + 1;
+    string temp{};
+    if(A.length() < B.length()) {
+        temp = A;
+        A = B;
+        B = temp;
+    }
 
     string answer{};
 
-    int currentA{}, currentB{}, over{0}, currentN{0};
+    int currentA{0}, currentB{0}, over{0}, currentN{0};
 
-    for(int i=0; i<newLength; i++) {
-        currentA = int(A.at(i));
-        currentB = int(B.at(i));
-
-        over = (currentA + currentB + over) / 10;
+    for(int i=B.length()-1; 0 <= i; i--) {
+        currentA = A.at(A.length() - B.length() + i)-48;
+        currentB = B.at(i)-48;
         currentN = (currentA + currentB + over) % 10;
-
+        over = (currentA + currentB + over) / 10;
         answer = to_string(currentN) + answer;
+    }
+    if(B.length() == A.length()) {
+        if(over == 1) {
+            answer = "1" + answer;
+        }
+    } else {
+        for(int i=A.length() - B.length()-1; 0 <= i; i--) {
+            currentA = A.at(i)-48;
+            currentN = (currentA + over) % 10;
+            over = (currentA + over) / 10;
+            answer = to_string(currentN) + answer;
+        }
+        if(over == 1) {
+            answer = "1" + answer;
+        }
     }
     cout << answer;
     return 0;
 }
-
-// 대충 스트링 길이 짧은쪽까지만 계산하도록 셋팅해주면 된다.
