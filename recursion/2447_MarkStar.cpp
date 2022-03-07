@@ -2,11 +2,6 @@
 
 using namespace std;
 
-string blankMaker(int currentN)
-{
-    return "";
-}
-
 string myStar(int currentN)
 {
     string currentReturn{""};
