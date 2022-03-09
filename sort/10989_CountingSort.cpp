@@ -2,12 +2,17 @@
 
 using namespace std;
 
+
+
 int main()
 {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
     int inputN{};
     
     cin >> inputN;
-    int myArray[10001], temp{};
+    int myArray[10001]{}, temp{};
 
     for(int i=0; i<inputN; i++)
     {
@@ -27,3 +32,5 @@ int main()
     }
     return 0;
 }
+
+//https://www.acmicpc.net/problem/10989
