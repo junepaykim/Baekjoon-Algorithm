@@ -1,44 +1,69 @@
 #include<iostream>
 #include<algorithm>
 #include<string>
+#include<cmath>
 
 using namespace std;
 
 int main() 
 {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
     int inputNumbers{};
     cin >> inputNumbers;
 
-    int * myArray = new int[inputNumbers+1];
+    int myArray[8001]{}, temp{};
 
-    for(int i=1; i<inputNumbers+1; i++)
+    for(int i=0; i<inputNumbers; i++)
     {
-        cin >> *(myArray+i);
+        cin >> temp;
+        myArray[4000+temp]++;
     }
-    
-    sort(myArray, myArray+inputNumbers);
 
-    int middle{}, average{0}, currentFrequent{}, maxFrequent{0}, rangeLow{4000}, rangeHigh{0};
-    *(myArray) = -1;
+    int middle{}, maxFrequent{0}, rangeLow{8000}, rangeHigh{0};
+    bool maxFreqUpdated {false}, maxFreqFixed{false};
+    long double average{0};
 
-    for(int i=1; i<inputNumbers; i++)
+
+    //최빈값 수정 필요
+    //평균 완료
+    //범위 완료
+    for(int i=0; i<8001; i++)
     {
-        if(*(myArray+i-1) != *(myArray+i))
+        if(!maxFreqFixed)
         {
-            maxFrequent = currentFrequent > maxFrequent ? currentFrequent : maxFrequent;
-            currentFrequent = 0;
+            if(*(myArray + i) > 0 && *(myArray + i) >= *(myArray+maxFrequent))
+            {
+                if(!maxFreqUpdated)
+                {
+                    maxFrequent = i;
+                    maxFreqUpdated = true;
+                }
+                else
+                {
+                    maxFrequent = i;
+                    maxFreqFixed = true;
+                }
+            }
         }
-        else
+
+        average += *(myArray+i) * (i);
+
+        if(*(myArray+i) != 0)
         {
-            currentFrequent ++;
+            rangeHigh = i;
         }
-        average += *(myArray+i);
-        rangeLow = *(myArray+i) < rangeLow ? *(myArray+i) : rangeLow;
-        rangeHigh = *(myArray+i) > rangeHigh ? *(myArray+i) : rangeHigh;
+        if(rangeLow == 8000 && *(myArray+i) != 0)
+        {
+            rangeLow = i;
+        }
     }
+
     if(inputNumbers % 2 == 0)
     {
-        middle = *(myArray + inputNumbers / 2) + *(myArray + inputNumbers / 2 + 1);
+        middle = *(myArray + inputNumbers / 2 - 1) + *(myArray + inputNumbers / 2 );
         middle /= 2;
     }
     else
@@ -46,10 +71,11 @@ int main()
         middle = *(myArray + inputNumbers / 2 + 1);
     }
     //Last case
-    maxFrequent = currentFrequent > maxFrequent ? currentFrequent : maxFrequent;
     
-    cout << average << "\n" << middle << "\n" << maxFrequent << "\n" << rangeHigh - rangeLow;
+    average = (average - 4000 * inputNumbers) / inputNumbers;
+    average = floor(average + 0.5);
 
-    delete[] myArray;
+    cout << "\n" << average << "\n" << middle << "\n" << maxFrequent-4000 << "\n" << rangeHigh - rangeLow;
+
     return 0;
 }
