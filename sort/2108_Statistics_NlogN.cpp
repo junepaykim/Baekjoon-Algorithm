@@ -1,9 +1,12 @@
 #include<iostream>
-#include<algorithm>
 #include<string>
 #include<cmath>
 
 using namespace std;
+
+#define RANGE   8001
+
+int FindMiddle(int * myArray, int inputNumbers);
 
 int main() 
 {
@@ -14,68 +17,133 @@ int main()
     int inputNumbers{};
     cin >> inputNumbers;
 
-    int myArray[8001]{}, temp{};
+    int myArray[RANGE+1]{}, temp{};
 
     for(int i=0; i<inputNumbers; i++)
     {
         cin >> temp;
-        myArray[4000+temp]++;
+        myArray[RANGE/2+temp]++;
     }
 
-    int middle{}, maxFrequent{0}, rangeLow{8000}, rangeHigh{0};
-    bool maxFreqUpdated {false}, maxFreqFixed{false};
+    int maxFrequent{RANGE}, rangeLow{RANGE-1}, rangeHigh{0}, maxCount{0};
+    bool maxFreqFixed{false};
     long double average{0};
 
-
-    //최빈값 수정 필요
-    //평균 완료
-    //범위 완료
-    for(int i=0; i<8001; i++)
+    *(myArray+maxFrequent) = 1;
+    for(int i=0; i<RANGE; i++)
     {
-        if(!maxFreqFixed)
-        {
-            if(*(myArray + i) > 0 && *(myArray + i) >= *(myArray+maxFrequent))
-            {
-                if(!maxFreqUpdated)
-                {
-                    maxFrequent = i;
-                    maxFreqUpdated = true;
-                }
-                else
-                {
-                    maxFrequent = i;
-                    maxFreqFixed = true;
-                }
-            }
-        }
-
-        average += *(myArray+i) * (i);
-
         if(*(myArray+i) != 0)
         {
             rangeHigh = i;
         }
-        if(rangeLow == 8000 && *(myArray+i) != 0)
+        if(rangeLow == RANGE-1 && *(myArray+i) != 0)
         {
             rangeLow = i;
         }
+
+        if(*(myArray + i) > *(myArray+maxFrequent))
+        {
+            maxFrequent = i;
+            maxFreqFixed = false;
+        }
+        else if (*(myArray+i) == *(myArray+maxFrequent) && !maxFreqFixed)
+        {
+            maxFrequent = i;
+            maxFreqFixed = true;
+        }
+
+        average += *(myArray+i) * (i);
     }
 
-    if(inputNumbers % 2 == 0)
+    if(*(myArray+maxFrequent) == 1)
     {
-        middle = *(myArray + inputNumbers / 2 - 1) + *(myArray + inputNumbers / 2 );
-        middle /= 2;
+        maxFreqFixed = false;
+        for(int i=0; i<RANGE; i++)
+        {
+            if(*(myArray+i) == 1 && !maxFreqFixed)
+            {
+                maxFrequent = i;
+                maxFreqFixed = true;
+            }
+            else if(*(myArray+i) == 1 && maxFreqFixed)
+            {
+                maxFrequent = i;
+                break;
+            }
+        }
+    }
+
+    //Test code for Print Array(Just find meaningful datas)
+
+    // cout << "\n";
+    // for(int i=0; i<RANGE; i++)
+    // {
+    //     if(*(myArray+i) != 0)
+    //     {
+    //         cout << i-RANGE/2 << " : " << *(myArray+i) << "\n";
+    //     }
+    // }
+    // cout << "\n";
+    
+    int middle = FindMiddle(myArray, inputNumbers);
+    
+    average = (average - RANGE/2 * inputNumbers) / inputNumbers;
+    average = floor(average + 0.5);
+
+    cout << average << "\n" << middle-4000 << "\n" << maxFrequent-RANGE/2 << "\n" << rangeHigh - rangeLow;
+
+    return 0;
+}
+
+
+int FindMiddle(int * myArray, int inputNumbers)
+{
+    int answer{}, middleSum{0};
+
+    if(inputNumbers % 2 != 0)
+    {
+        //odd logic
+        for(int i=0; i < RANGE; i++)
+        {
+            if(middleSum + *(myArray+i) >= inputNumbers/2 + 1)
+            {
+                answer = i;
+                break;
+            }
+            else
+            {
+                middleSum += *(myArray+i);
+            }
+        }
     }
     else
     {
-        middle = *(myArray + inputNumbers / 2 + 1);
+        for(int i=0; i < RANGE; i++)
+        {
+            if(middleSum + *(myArray+i) > inputNumbers/2 + 1)
+            {
+                answer = i;
+                break;
+            }
+            if(middleSum + *(myArray+i) == inputNumbers/2)
+            {
+                for(int j=i+1; j < RANGE; j++)
+                {
+                    if(*(myArray+j) != 0)
+                    {
+                        //Might not work because I don't think about float point precisely
+                        //Because the question just asks for input number of odd case. So, this code actually never used.
+                        answer = (i + j) / 2;
+                        break;
+                    }
+                }
+                break;
+            }
+            else
+            {
+                middleSum += *(myArray+i);
+            }
+        }
     }
-    //Last case
-    
-    average = (average - 4000 * inputNumbers) / inputNumbers;
-    average = floor(average + 0.5);
-
-    cout << "\n" << average << "\n" << middle << "\n" << maxFrequent-4000 << "\n" << rangeHigh - rangeLow;
-
-    return 0;
+    return answer;
 }
